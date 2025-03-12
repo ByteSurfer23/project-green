@@ -20,39 +20,44 @@ mongoose
   .then(() => console.log("MongoDB Connected"))
   .catch((err) => console.error("MongoDB connection error:", err));
 
-app.post("/upload", async (req, res) => {
-  console.log(req.body);
-  const { 
-    scientificName,
-    commonName,
-    plantType,
-    properties,
-    family,
-    imgUrl,
-    latitude,
-    longitude,
-  } = req.body;
-
-  try{
-    const newPlant = new Plant({
+  app.post("/upload", async (req, res) => {
+    console.log(req.body);
+    const { 
       scientificName,
       commonName,
+      genus,
+      family,
       plantType,
       properties,
-      family,
+      medicinal,
+      reference,
       imgUrl,
       latitude,
-      longitude
-    });
-
-    await newPlant.save();
-    res.json({ message: "Plant data saved successfully!", plant: newPlant });
-  }
-  catch(error){
-    console.log(error);
-    res.status(500).json({ error: "Error saving plant data" });
-  }
-});
+      longitude,
+    } = req.body;
+  
+    try {
+      const newPlant = new Plant({
+        scientificName,
+        commonName,
+        genus,
+        family,
+        plantType,
+        properties,
+        medicinal,
+        reference,
+        imgUrl,
+        latitude: latitude || null,
+        longitude: longitude || null,
+      });
+  
+      await newPlant.save();
+      res.json({ message: "Plant data saved successfully!", plant: newPlant });
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({ error: "Error saving plant data" });
+    }
+  });
 
 app.get("/search", async (req, res) => {
   try {
