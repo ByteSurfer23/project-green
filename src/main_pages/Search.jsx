@@ -11,6 +11,7 @@ const Search = () => {
   const handleSearch = async () => {
     setLoading(true);
     setError("");
+    setPlantData(null);
     
     try {
       const { data } = await axios.get(process.env.REACT_APP_CLIENT_PLANTSEARCH, {
@@ -19,9 +20,7 @@ const Search = () => {
 
       if (data) {
         setPlantData(data);
-    
       } else {
-        setPlantData(null);
         setError("No plant found.");
       }
     } catch (err) {
@@ -37,7 +36,6 @@ const Search = () => {
       <div className="card shadow-lg p-4">
         <h2 className="text-center mb-4">Search Plants</h2>
         
-        {/* Search Bar */}
         <div className="input-group mb-3">
           <input
             type="text"
@@ -50,25 +48,27 @@ const Search = () => {
             <option value="common">Common Name</option>
             <option value="scientific">Scientific Name</option>
           </select>
-          <button className="btn btn-primary" onClick={handleSearch}>
+          <button className="btn btn-primary" onClick={handleSearch} disabled={loading}>
             {loading ? "Searching..." : "Search"}
           </button>
         </div>
 
-        {/* Error Message */}
         {error && <div className="alert alert-danger">{error}</div>}
 
-        {/* Display Results */}
         {plantData && (
           <div className="card mt-4 shadow-sm">
             <div className="card-body">
               <h5 className="card-title">{plantData.commonName} ({plantData.scientificName})</h5>
-              <p className="card-text"><strong>Type:</strong> {plantData.plantType}</p>
-              <p className="card-text"><strong>Properties:</strong> {plantData.properties}</p>
-              <p className="card-text"><strong>Family:</strong> {plantData.family}</p>
-              <p className="card-text"><strong>Latitude:</strong> {plantData.latitude}</p>
-              <p className="card-text"><strong>Longitude:</strong> {plantData.longitude}</p>
-              {plantData.imgUrl && <img src={plantData.imgUrl} alt="Plant" className="img-fluid rounded" />}
+              <ul className="list-group list-group-flush">
+                {Object.entries(plantData).map(([key, value]) => (
+                  value && key !== "imgUrl" ? (
+                    <li key={key} className="list-group-item">
+                      <strong>{key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}:</strong> {value}
+                    </li>
+                  ) : null
+                ))}
+              </ul>
+              {plantData.imgUrl && <img src={plantData.imgUrl} alt="Plant" className="img-fluid rounded mt-3" />}
             </div>
           </div>
         )}

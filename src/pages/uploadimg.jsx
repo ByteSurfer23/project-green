@@ -14,6 +14,7 @@ function UploadImage() {
   const [reference, setReference] = useState("");
   const [latitude, setLatitude] = useState("");
   const [longitude, setLongitude] = useState("");
+  const [visitUrl, setVisitUrl] = useState("");
   const [image, setImage] = useState(null);
   const [imgUrl, setImgUrl] = useState("");
 
@@ -54,6 +55,7 @@ function UploadImage() {
         reference,
         latitude: latitude || null,
         longitude: longitude || null,
+        visitUrl,
         imgUrl,
       });
 
@@ -68,107 +70,19 @@ function UploadImage() {
       <div className="card shadow p-4">
         <h2 className="text-center mb-4">Upload Plant Data</h2>
         <form onSubmit={handleSubmit}>
-          <div className="mb-3">
-            <input
-              type="text"
-              className="form-control"
-              placeholder="Scientific Name"
-              value={scientificName}
-              onChange={(e) => setScientificName(e.target.value)}
-            />
-          </div>
-          <div className="mb-3">
-            <input
-              type="text"
-              className="form-control"
-              placeholder="Common Name"
-              value={commonName}
-              onChange={(e) => setCommonName(e.target.value)}
-            />
-          </div>
-          <div className="mb-3">
-            <input
-              type="text"
-              className="form-control"
-              placeholder="Genus"
-              value={genus}
-              onChange={(e) => setGenus(e.target.value)}
-            />
-          </div>
-          <div className="mb-3">
-            <input
-              type="text"
-              className="form-control"
-              placeholder="Family"
-              value={family}
-              onChange={(e) => setFamily(e.target.value)}
-            />
-          </div>
-          <div className="mb-3">
-            <input
-              type="text"
-              className="form-control"
-              placeholder="Type of Plant"
-              value={plantType}
-              onChange={(e) => setPlantType(e.target.value)}
-            />
-          </div>
-          <div className="mb-3">
-            <input
-              type="text"
-              className="form-control"
-              placeholder="Properties"
-              value={properties}
-              onChange={(e) => setProperties(e.target.value)}
-            />
-          </div>
-          <div className="mb-3">
-            <input
-              type="text"
-              className="form-control"
-              placeholder="Medicinal Uses"
-              value={medicinal}
-              onChange={(e) => setMedicinal(e.target.value)}
-            />
-          </div>
-          <div className="mb-3">
-            <input
-              type="text"
-              className="form-control"
-              placeholder="Reference"
-              value={reference}
-              onChange={(e) => setReference(e.target.value)}
-            />
-          </div>
-          <div className="mb-3">
-            <input
-              type="text"
-              className="form-control"
-              placeholder="Latitude (optional)"
-              value={latitude}
-              onChange={(e) => setLatitude(e.target.value)}
-            />
-          </div>
-          <div className="mb-3">
-            <input
-              type="text"
-              className="form-control"
-              placeholder="Longitude (optional)"
-              value={longitude}
-              onChange={(e) => setLongitude(e.target.value)}
-            />
-          </div>
-          <div className="mb-3">
-            <input
-              type="file"
-              className="form-control"
-              accept="image/*"
-              onChange={(e) => setImage(e.target.files[0])}
-            />
-          </div>
-          <button type="submit" className="btn btn-primary w-100">
-            Upload
-          </button>
+          <input type="text" className="form-control mb-3" placeholder="Scientific Name" value={scientificName} onChange={(e) => setScientificName(e.target.value)} />
+          <input type="text" className="form-control mb-3" placeholder="Common Name" value={commonName} onChange={(e) => setCommonName(e.target.value)} />
+          <input type="text" className="form-control mb-3" placeholder="Genus" value={genus} onChange={(e) => setGenus(e.target.value)} />
+          <input type="text" className="form-control mb-3" placeholder="Family" value={family} onChange={(e) => setFamily(e.target.value)} />
+          <input type="text" className="form-control mb-3" placeholder="Type of Plant" value={plantType} onChange={(e) => setPlantType(e.target.value)} />
+          <input type="text" className="form-control mb-3" placeholder="Properties" value={properties} onChange={(e) => setProperties(e.target.value)} />
+          <input type="text" className="form-control mb-3" placeholder="Medicinal Uses" value={medicinal} onChange={(e) => setMedicinal(e.target.value)} />
+          <input type="text" className="form-control mb-3" placeholder="Reference" value={reference} onChange={(e) => setReference(e.target.value)} />
+          <input type="text" className="form-control mb-3" placeholder="Latitude (optional)" value={latitude} onChange={(e) => setLatitude(e.target.value)} />
+          <input type="text" className="form-control mb-3" placeholder="Longitude (optional)" value={longitude} onChange={(e) => setLongitude(e.target.value)} />
+          <input type="text" className="form-control mb-3" placeholder="Visit URL (optional)" value={visitUrl} onChange={(e) => setVisitUrl(e.target.value)} />
+          <input type="file" className="form-control mb-3" accept="image/*" onChange={(e) => setImage(e.target.files[0])} />
+          <button type="submit" className="btn btn-primary w-100">Upload</button>
         </form>
       </div>
     </div>

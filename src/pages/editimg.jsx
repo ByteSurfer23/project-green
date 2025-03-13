@@ -80,9 +80,10 @@ const EditPlant = () => {
             <input type="text" className="form-control mb-3" name="properties" value={editedData.properties} onChange={handleChange} placeholder="Properties" />
             <input type="text" className="form-control mb-3" name="medicinal" value={editedData.medicinal} onChange={handleChange} placeholder="Medicinal Uses" />
             <input type="text" className="form-control mb-3" name="reference" value={editedData.reference} onChange={handleChange} placeholder="Reference" />
-            {/* <input type="text" className="form-control mb-3" name="habitat" value={editedData.habitat} onChange={handleChange} placeholder="Habitat" />
-            <input type="text" className="form-control mb-3" name="conservationStatus" value={editedData.conservationStatus} onChange={handleChange} placeholder="Conservation Status" />
-            <textarea className="form-control mb-3" name="description" value={editedData.description} onChange={handleChange} placeholder="Description"></textarea> */}
+            <input type="text" className="form-control mb-3" name="latitude" value={editedData.latitude || ""} onChange={handleChange} placeholder="Latitude" />
+            <input type="text" className="form-control mb-3" name="longitude" value={editedData.longitude || ""} onChange={handleChange} placeholder="Longitude" />
+            <input type="text" className="form-control mb-3" name="visitUrl" value={editedData.visitUrl || ""} onChange={handleChange} placeholder="Visit URL" />
+
             <div className="mb-3">
               <label className="form-label">Current Image</label>
               <div><img src={editedData.imgUrl} alt="Plant" className="img-thumbnail" style={{ width: "150px" }} /></div>
