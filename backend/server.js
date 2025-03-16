@@ -4,6 +4,7 @@ const dotenv = require("dotenv");
 const mongoose = require("mongoose");
 const Plant = require("./schema/PlantSchema");
 const clientRoutes = require("./routes/clientRoutes");
+const filterRoutes = require("./routes/plantFilters");
 dotenv.config();
 
 const app = express();
@@ -11,6 +12,7 @@ app.use(cors());
 app.use(express.json()); // Middleware to parse JSON
 
 app.use("/client", clientRoutes);
+app.use("/api",filterRoutes);
 // Connect to MongoDB
 mongoose
   .connect(process.env.MONGO_URL, {

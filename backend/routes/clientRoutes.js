@@ -1,14 +1,23 @@
 const express = require("express");
 const router = express.Router();
 const Plant = require("../schema/PlantSchema");
+
 // Route: Search for a plant using common or scientific name
 router.get("/plant-search", async (req, res) => {
   const { query, type } = req.query;
 
+  if (!query || !type) {
+    return res.status(400).json({ message: "Query and type are required." });
+  }
+
   try {
-    // Find plant based on search type
+    // Normalize query
+    const searchQuery = query.trim().toLowerCase();
+    const searchField = type === "common" ? "commonName" : "scientificName";
+
+    // Use regex for case-insensitive and partial matching
     const plant = await Plant.findOne({
-      [type === "common" ? "commonName" : "scientificName"]: query,
+      [searchField]: { $regex: new RegExp(searchQuery, "i") },
     });
 
     if (!plant) {
