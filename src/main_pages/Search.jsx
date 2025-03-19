@@ -19,16 +19,16 @@ const Search = () => {
     setPlantData(null);
 
     try {
-      const { data } = await axios.get("http://localhost:5000/api/plant-filter", {
-        params: {
-          references: searchQuery.trim() || "",
-          ornamental: ornamental ? "true" : "",
-          medicinal: medicinal ? "true" : "",
-          family: family.trim() || "",
-          genus: genus.trim() || "",
-          plantType: plantType.trim() || "",
-        },
+      console.log(process.env.REACT_APP_CLIENT_PLANTFILTER);
+      const { data } = await axios.post(process.env.REACT_APP_CLIENT_PLANTFILTER, {
+        references: searchQuery.trim() || "",
+        ornamental: ornamental ? "true" : "",
+        medicinal: medicinal ? "true" : "",
+        family: family.trim() || "",
+        genus: genus.trim() || "",
+        plantType: plantType.trim() || "",
       });
+      
 
       if (data.length > 0) {
         setPlantData(data);

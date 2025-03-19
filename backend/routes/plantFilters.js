@@ -1,38 +1,28 @@
 const express = require("express");
-const router = express.Router();
 const Plant = require("../schema/PlantSchema");
 
-// Route: Filter plants based on references and optional filters
-router.get("/plant-filter", async (req, res) => {
-  let { references, ornamental, medicinal, family, genus, plantType } = req.query;
+const router = express.Router();
 
+router.post("/plant-filter", async (req, res) => {
   try {
-    // Initialize query object
+    const { references, ornamental, medicinal, family, genus, plantType } = req.body;
+    
     let query = {};
 
-    // Add references to query if provided
-    if (references && references.trim()) {
-      query.references = { $regex: new RegExp(references.trim(), "i") };
+    if (references) {
+      query.$text = { $search: references.trim() };
     }
 
-    // Add optional filters if they are provided
-    if (ornamental && ornamental.trim()) query.ornamental = ornamental.trim().toLowerCase() === "true";
-    if (medicinal && medicinal.trim()) query.medicinal = medicinal.trim().toLowerCase() === "true";
-    if (family && family.trim()) query.family = { $regex: new RegExp(family.trim(), "i") };
-    if (genus && genus.trim()) query.genus = { $regex: new RegExp(genus.trim(), "i") };
-    if (plantType && plantType.trim()) query.plantType = { $regex: new RegExp(plantType.trim(), "i") };
-
-    // Fetch matching plants
-    const plants = await Plant.find(query);
+    const plants = await Plant.find(query, { score: { $meta: "textScore" } }).sort({ score: { $meta: "textScore" } });
 
     if (plants.length === 0) {
       return res.status(404).json({ message: "No matching plants found." });
     }
 
-    res.json(plants);
+    res.json([plants]);
   } catch (error) {
     console.error("Filter Error:", error);
-    res.status(500).json({ message: "Server error." });
+    res.status(500).json({ message: "Something went wrong." });
   }
 });
 
