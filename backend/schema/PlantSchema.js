@@ -14,6 +14,11 @@ const PlantSchema = new mongoose.Schema({
   longitude: { type: String, default: null },
   visitUrl: { type: String, default: null }, // New parameter added
 });
-PlantSchema.index({ reference: "text", otherField: "text" });
+PlantSchema.index({
+  reference: "text",
+  family: "text",
+  genus: "text",
+  medicinal:"text",
+});
 
 module.exports = mongoose.model("Plant", PlantSchema);
