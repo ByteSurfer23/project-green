@@ -8,6 +8,8 @@ const Search = () => {
   const [genus, setGenus] = useState("");
   const [plantType, setPlantType] = useState("");
   const [properties, setProperties] = useState("");
+  const [commonName , setCommon] = useState("");
+  const [scientificName , setScientific] = useState("");
   const [plantData, setPlantData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -88,6 +90,8 @@ const Search = () => {
       const response = await axios.post(
         process.env.REACT_APP_CLIENT_PLANTFILTER,
         {
+          scientificName:scientificName.trim()|| "",
+          commonName:commonName.trim() || "",
           references: searchQuery.trim() || "",
           medicinal: medicinal.trim() || "",
           family: family.trim() || "",
@@ -114,6 +118,26 @@ const Search = () => {
     <div className="container mt-5">
       <div className="card shadow-lg p-4">
         <h2 className="text-center mb-4">Search Plants</h2>
+
+        <div className="input-group mb-3">
+          <input
+            type="text"
+            className="form-control"
+            placeholder="Enter Scientific Name"
+            value={scientificName}
+            onChange={(e) => setScientific(e.target.value)}
+          />
+        </div>
+
+        <div className="input-group mb-3">
+          <input
+            type="text"
+            className="form-control"
+            placeholder="Enter Common Name"
+            value={commonName}
+            onChange={(e) => setCommon(e.target.value)}
+          />
+        </div>
 
         <div className="input-group mb-3">
           <input

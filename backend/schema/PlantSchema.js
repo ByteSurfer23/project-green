@@ -15,6 +15,8 @@ const PlantSchema = new mongoose.Schema({
   visitUrl: { type: String, default: null }, // New parameter added
 });
 PlantSchema.index({
+  scientificName:"text",
+  commonName:"text",
   reference: "text",
   family: "text",
   genus: "text",
