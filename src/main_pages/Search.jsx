@@ -8,13 +8,13 @@ const Search = () => {
   const [genus, setGenus] = useState("");
   const [plantType, setPlantType] = useState("");
   const [properties, setProperties] = useState("");
-  const [commonName , setCommon] = useState("");
-  const [scientificName , setScientific] = useState("");
+  const [commonName, setCommon] = useState("");
+  const [scientificName, setScientific] = useState("");
   const [plantData, setPlantData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const plantTypes =[
+  const plantTypes = [
     "Perennial shrub",
     "Tree",
     "Evergreen perennial",
@@ -59,7 +59,7 @@ const Search = () => {
     "Cactus",
     "Large shrub",
     "Spreading plant",
-    "Evergreen vining shrub"
+    "Evergreen vining shrub",
   ];
   const propertyOptions = [
     "Ornamental plant",
@@ -90,8 +90,8 @@ const Search = () => {
       const response = await axios.post(
         process.env.REACT_APP_CLIENT_PLANTFILTER,
         {
-          scientificName:scientificName.trim()|| "",
-          commonName:commonName.trim() || "",
+          scientificName: scientificName.trim() || "",
+          commonName: commonName.trim() || "",
           references: searchQuery.trim() || "",
           medicinal: medicinal.trim() || "",
           family: family.trim() || "",
@@ -216,27 +216,35 @@ const Search = () => {
             {plantData.map((plant, index) => (
               <div key={index} className="card mt-3 shadow-sm">
                 <div className="card-body">
-                  <h5 className="card-title">
-                    {plant.commonName} ({plant.scientificName})
-                  </h5>
+                  <h5 className="card-title">{plant.scientificName}</h5>
                   <ul className="list-group list-group-flush">
-                    {Object.entries(plant).map(([key, value]) =>
-                      value &&
-                      key !== "imgUrl" &&
-                      key !== "_id" &&
-                      key !== "score" ? (
-                        <li key={key} className="list-group-item">
-                          <strong>
-                            {key
+                    {Object.entries(plant).map(([key, value]) => {
+                      if (!value || ["imgUrl", "_id", "score"].includes(key))
+                        return null;
+
+                      if (key === "medicinal") {
+                        return (
+                          <li key={key} className="list-group-item">
+                            <strong>Medicinal Properties:</strong> {value}
+                          </li>
+                        );
+                      }
+
+                      const formattedKey =
+                        key === "reference"
+                          ? "References"
+                          : key
                               .replace(/([A-Z])/g, " $1")
-                              .replace(/^./, (str) => str.toUpperCase())}
-                            :
-                          </strong>{" "}
-                          {value}
+                              .replace(/^./, (str) => str.toUpperCase());
+
+                      return (
+                        <li key={key} className="list-group-item">
+                          <strong>{formattedKey}:</strong> {value}
                         </li>
-                      ) : null
-                    )}
+                      );
+                    })}
                   </ul>
+
                   {plant.imgUrl && (
                     <p className="mt-2">
                       <strong>Image:</strong>{" "}
