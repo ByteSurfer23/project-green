@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 const GreenSchema = new mongoose.Schema({
-  place: { type: String, required: true },
+  name: { type: String, required: true },
   area: { type: String, required: true },
   imgUrl: { type: String, required: true },
   latitude: { type: String, default: null },
