@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import axios from "axios";
 
 const GreenCoverForm = () => {
-  const [selectedName, setSelectedName] = useState("");
   const [image, setImage] = useState(null);
   const [formData, setFormData] = useState({
     name: "",
@@ -10,12 +9,12 @@ const GreenCoverForm = () => {
     latitude: "",
     longitude: "",
     visitUrl: "",
-    imageUrl: ""
+    imageUrl: "",
   });
 
   const uploadFile = async () => {
-    if (!image) return ""; // Allow null image
-    
+    if (!image) return "";
+
     const data = new FormData();
     data.append("file", image);
     data.append("upload_preset", "images_preset");
@@ -48,66 +47,71 @@ const GreenCoverForm = () => {
   };
 
   return (
-    <div className="container mt-4">
-      <form onSubmit={handleFetch} className="mt-4">
-        <div className="mb-3">
-          <input
-            type="text"
-            name="name"
-            value={formData.name}
-            onChange={handleChange}
-            className="form-control"
-            placeholder="Name"
-          />
-        </div>
-        <div className="mb-3">
-          <input
-            type="text"
-            name="area"
-            value={formData.area}
-            onChange={handleChange}
-            className="form-control"
-            placeholder="Area"
-          />
-        </div>
-        <div className="mb-3">
-          <input
-            type="text"
-            name="latitude"
-            value={formData.latitude}
-            onChange={handleChange}
-            className="form-control"
-            placeholder="Latitude"
-          />
-        </div>
-        <div className="mb-3">
-          <input
-            type="text"
-            name="longitude"
-            value={formData.longitude}
-            onChange={handleChange}
-            className="form-control"
-            placeholder="Longitude"
-          />
-        </div>
-        <div className="mb-3">
-          <input
-            type="text"
-            name="visitUrl"
-            value={formData.visitUrl}
-            onChange={handleChange}
-            className="form-control"
-            placeholder="Visit URL"
-          />
-        </div>
-        <input
-          type="file"
-          className="form-control mb-3"
-          accept="image/*"
-          onChange={(e) => setImage(e.target.files[0] || null)}
-        />
-        <button type="submit" className="btn btn-success">Submit</button>
-      </form>
+    <div className="container mt-4 d-flex justify-content-center p-4">
+      <div className="card p-4 shadow-lg" style={{ width: "100%", borderRadius: "10px" }}>
+        <h2 className="text-center mb-4 text-success">Upload Green Cover Data</h2>
+        <form onSubmit={handleFetch}>
+          <div className="mb-3">
+            <input
+              type="text"
+              name="name"
+              value={formData.name}
+              onChange={handleChange}
+              className="form-control"
+              placeholder="Name"
+            />
+          </div>
+          <div className="mb-3">
+            <input
+              type="text"
+              name="area"
+              value={formData.area}
+              onChange={handleChange}
+              className="form-control"
+              placeholder="Area"
+            />
+          </div>
+          <div className="mb-3">
+            <input
+              type="text"
+              name="latitude"
+              value={formData.latitude}
+              onChange={handleChange}
+              className="form-control"
+              placeholder="Latitude"
+            />
+          </div>
+          <div className="mb-3">
+            <input
+              type="text"
+              name="longitude"
+              value={formData.longitude}
+              onChange={handleChange}
+              className="form-control"
+              placeholder="Longitude"
+            />
+          </div>
+          <div className="mb-3">
+            <input
+              type="text"
+              name="visitUrl"
+              value={formData.visitUrl}
+              onChange={handleChange}
+              className="form-control"
+              placeholder="Visit URL"
+            />
+          </div>
+          <div className="mb-3">
+            <input
+              type="file"
+              className="form-control"
+              accept="image/*"
+              onChange={(e) => setImage(e.target.files[0] || null)}
+            />
+          </div>
+          <button type="submit" className="btn btn-success w-100">Submit</button>
+        </form>
+      </div>
     </div>
   );
 };

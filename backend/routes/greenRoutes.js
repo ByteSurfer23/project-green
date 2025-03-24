@@ -26,4 +26,43 @@ router.post("/green-fetch", async (req, res) => {
   }
 });
 
+
+router.get("/green-search", async (req, res) => {
+  const name = decodeURIComponent(req.query.name); // Decode the parameter
+  console.log(name);
+  
+  try {
+    const data = await green.findOne({name});
+    return res.json( data || {});
+
+  } catch (error) {
+    console.error("Green Search Error", error);
+    return res.status(500).json({ message: "Something went wrong." });
+  }
+});
+
+
+
+router.post("/green-edit", async (req, res) => {
+  try {
+    const { _id, ...updatedData } = req.body; // Extract _id from request body
+
+    if (!_id) return res.status(400).json({ error: "ID is required" });
+
+    const result = await green.findByIdAndUpdate(_id, updatedData, {
+      new: true, // Return the updated document
+      overwrite: true, // Replace existing document
+    });
+
+    if (!result) return res.status(404).json({ error: "Document not found" });
+
+    res.json({ message: "Data updated successfully!", data: result });
+  } catch (error) {
+    console.error("Error updating data:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+
+
 module.exports = router;
