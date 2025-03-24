@@ -1,10 +1,10 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import axios from "axios";
+import "bootstrap/dist/css/bootstrap.min.css";
 
-const GreenCover = () => {
-  const [selectedOption, setSelectedOption] = useState("Select Location");
-  const [locationData, setLocationData] = useState(null);
-
+const DeleteGreenCover = () => {
+  const [selectedOption, setSelectedOption] = useState("Select an option");
+  
   const vitLocations = [
     "VIT Parking Area 1", "VIT Parking Area 2", "VIT Parking Area 3", "VIT Parking Area 4",
     "All mart & Generator area", "CDMM front", "CDMM side", "Clinic front",
@@ -54,92 +54,41 @@ const GreenCover = () => {
     "MG Block Front 4", "PRP Right Side", "PRP Back Forest", "VIT Parking Area",
   ];
 
-  const fetchLocationData = async () => {
-    if (selectedOption === "Select Location") {
-      alert("Please select a location first!");
-      return;
-    }
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!selectedOption) return;
     try {
-      const response = await axios.get(process.env.REACT_APP_GREEN_SEARCH, {
-        params:{ name: encodeURIComponent(selectedOption) },
-      });
-
-      setLocationData(response.data); // Store received data
+      await axios.delete(process.env.REACT_APP_GREEN_DELETE, { data: { name: selectedOption } });
+      alert("Data deleted successfully!");
     } catch (error) {
-      console.error("Error:", error);
+      console.error("Error deleting item:", error);
     }
   };
 
   return (
-    <div className="container mt-5">
-      <div className="dropdown">
-        <button
-          className="btn btn-primary dropdown-toggle"
-          type="button"
-          id="dropdownMenuButton"
-          data-bs-toggle="dropdown"
-          aria-expanded="false"
-        >
+    <div className="container mt-5 p-4 border rounded shadow">
+      <h3 className="text-center mb-4">Delete Green Cover Data</h3>
+      <div className="dropdown mb-3">
+        <button className="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
           {selectedOption}
         </button>
-        <ul
-          className="dropdown-menu overflow-auto"
-          style={{ maxHeight: "300px" }}
-          aria-labelledby="dropdownMenuButton"
-        >
+        <ul className="dropdown-menu overflow-auto" style={{ maxHeight: "300px" }}>
           {vitLocations.map((option) => (
             <li key={option}>
-              <button
-                className="dropdown-item"
-                onClick={() => setSelectedOption(option)}
-              >
+              <button className="dropdown-item" onClick={() => setSelectedOption(option)}>
                 {option}
               </button>
             </li>
           ))}
         </ul>
       </div>
-
-      <button className="btn btn-success mt-3" onClick={fetchLocationData}>
-        Search
-      </button>
-
-      {locationData && (
-        <div className="mt-4">
-          <h3>{locationData.name}</h3>
-
-          <div className="mt-3">
-            <AreaComponent area={locationData.area} />
-            <CoordinatesComponent latitude={locationData.latitude} longitude={locationData.longitude} />
-          </div>
-
-          <a href={locationData.visitUrl} target="_blank" rel="noopener noreferrer">
-            View on Map
-          </a>
-
-          <div className="mt-3">
-            <img src={locationData.imgUrl} alt={locationData.name} className="img-fluid" />
-          </div>
-        </div>
-      )}
+      <button className="btn btn-info w-100 mb-3" onClick={handleSubmit}>Delete</button>
     </div>
   );
 };
 
-const AreaComponent = ({ area }) => (
-  <div>
-    <h5>Area</h5>
-    <p>{area} sq. meters</p>
-  </div>
-);
+export default DeleteGreenCover;
 
-const CoordinatesComponent = ({ latitude, longitude }) => (
-  <div>
-    <h5>Coordinates</h5>
-    <p>{latitude}</p>
-    <p>{longitude}</p>
-  </div>
-);
 
-export default GreenCover;
+

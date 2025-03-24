@@ -63,6 +63,18 @@ router.post("/green-edit", async (req, res) => {
   }
 });
 
+router.delete("/green-delete", async (req, res) => {
+  try {
+    const { name } = req.body;
+    const deletedItem = await green.findOneAndDelete({ name });
+    if (!deletedItem) {
+      return res.status(404).json({ error: "Item not found" });
+    }
+    res.json({ message: "Item deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ error: "Error deleting item" });
+  }
+});
 
 
 module.exports = router;
