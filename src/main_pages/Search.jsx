@@ -2,17 +2,19 @@ import { useState } from "react";
 import axios from "axios";
 
 const Search = () => {
+  const [scientificName, setScientific] = useState("");
+  const [commonName, setCommon] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
-  const [medicinal, setMedicinal] = useState("");
   const [family, setFamily] = useState("");
   const [genus, setGenus] = useState("");
   const [plantType, setPlantType] = useState("");
+  const [medicinal, setMedicinal] = useState("");
   const [properties, setProperties] = useState("");
-  const [commonName, setCommon] = useState("");
-  const [scientificName, setScientific] = useState("");
   const [plantData, setPlantData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5;
 
   const plantTypes = [
     "Perennial shrub",
@@ -85,6 +87,7 @@ const Search = () => {
     setLoading(true);
     setError("");
     setPlantData([]);
+    setCurrentPage(1);
 
     try {
       const response = await axios.post(
@@ -114,6 +117,22 @@ const Search = () => {
     }
   };
 
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = plantData.slice(indexOfFirstItem, indexOfLastItem);
+
+  const nextPage = () => {
+    if (currentPage < Math.ceil(plantData.length / itemsPerPage)) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  const prevPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
   return (
     <div className="container mt-5">
       <div className="card shadow-lg p-4">
@@ -122,7 +141,7 @@ const Search = () => {
         <div className="input-group mb-3">
           <input
             type="text"
-            className="form-control"
+            className="form-control small-text"
             placeholder="Enter Scientific Name"
             value={scientificName}
             onChange={(e) => setScientific(e.target.value)}
@@ -132,7 +151,7 @@ const Search = () => {
         <div className="input-group mb-3">
           <input
             type="text"
-            className="form-control"
+            className="form-control small-text"
             placeholder="Enter Common Name"
             value={commonName}
             onChange={(e) => setCommon(e.target.value)}
@@ -142,7 +161,7 @@ const Search = () => {
         <div className="input-group mb-3">
           <input
             type="text"
-            className="form-control"
+            className="form-control small-text"
             placeholder="Enter plant reference..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
@@ -153,14 +172,14 @@ const Search = () => {
           <div className="col-md-6">
             <input
               type="text"
-              className="form-control mb-2"
+              className="form-control mb-2 small-text"
               placeholder="Family"
               value={family}
               onChange={(e) => setFamily(e.target.value)}
             />
             <input
               type="text"
-              className="form-control mb-2"
+              className="form-control mb-2 small-text"
               placeholder="Genus"
               value={genus}
               onChange={(e) => setGenus(e.target.value)}
@@ -168,7 +187,7 @@ const Search = () => {
           </div>
           <div className="col-md-6">
             <select
-              className="form-select mb-2"
+              className="form-select mb-2 small-text"
               value={plantType}
               onChange={(e) => setPlantType(e.target.value)}
             >
@@ -181,13 +200,13 @@ const Search = () => {
             </select>
             <input
               type="text"
-              className="form-control mb-2"
+              className="form-control mb-2 small-text"
               placeholder="Medicinal"
               value={medicinal}
               onChange={(e) => setMedicinal(e.target.value)}
             />
             <select
-              className="form-select mb-2"
+              className="form-select mb-2 small-text"
               value={properties}
               onChange={(e) => setProperties(e.target.value)}
             >
@@ -211,21 +230,35 @@ const Search = () => {
 
         {error && <div className="alert alert-danger mt-3">{error}</div>}
 
-        {plantData.length > 0 && (
+        {currentItems.length > 0 && (
           <div className="mt-4">
-            {plantData.map((plant, index) => (
+            {currentItems.map((plant, index) => (
               <div key={index} className="card mt-3 shadow-sm">
                 <div className="card-body">
                   <h5 className="card-title">{plant.scientificName}</h5>
                   <ul className="list-group list-group-flush">
                     {Object.entries(plant).map(([key, value]) => {
-                      if (!value || ["imgUrl", "_id", "score"].includes(key))
-                        return null;
+                      if (["imgUrl", "_id", "score","__v","visitUrl"].includes(key)) return null;
 
                       if (key === "medicinal") {
                         return (
-                          <li key={key} className="list-group-item">
-                            <strong>Medicinal Properties:</strong> {value}
+                          <li key={key} className="list-group-item small-text">
+                            <strong>Medicinal Properties:</strong>{" "}
+                            {value || "N/A"}
+                          </li>
+                        );
+                      }
+                      
+
+
+                      
+                      if (["latitude", "longitude"].includes(key)) {
+                        return (
+                          <li key={key} className="list-group-item small-text">
+                            <strong>
+                              {key.charAt(0).toUpperCase() + key.slice(1)}:
+                            </strong>{" "}
+                            {value || "N/A"}
                           </li>
                         );
                       }
@@ -238,15 +271,30 @@ const Search = () => {
                               .replace(/^./, (str) => str.toUpperCase());
 
                       return (
-                        <li key={key} className="list-group-item">
-                          <strong>{formattedKey}:</strong> {value}
+                        <li key={key} className="list-group-item small-text">
+                          <strong>{formattedKey}:</strong> {value || "N/A"}
                         </li>
                       );
                     })}
                   </ul>
 
+
+                  {plant.visitUrl && (
+                    <p className="mt-2 small-text">
+                      <strong>Visit plant :</strong>{" "}
+                      <a
+                        href={plant.visitUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        {plant.visitUrl}
+                      </a>
+                    </p>
+                  )}
+
+
                   {plant.imgUrl && (
-                    <p className="mt-2">
+                    <p className="mt-2 small-text">
                       <strong>Image:</strong>{" "}
                       <a
                         href={plant.imgUrl}
@@ -257,9 +305,28 @@ const Search = () => {
                       </a>
                     </p>
                   )}
+                  
                 </div>
               </div>
             ))}
+            <div className="d-flex justify-content-between mt-3">
+              <button
+                className="btn btn-primary small-text"
+                onClick={prevPage}
+                disabled={currentPage === 1}
+              >
+                Previous
+              </button>
+              <button
+                className="btn btn-primary small-text"
+                onClick={nextPage}
+                disabled={
+                  currentPage >= Math.ceil(plantData.length / itemsPerPage)
+                }
+              >
+                Next
+              </button>
+            </div>
           </div>
         )}
       </div>
