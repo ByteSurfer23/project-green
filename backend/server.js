@@ -28,33 +28,20 @@ mongoose
 
   app.post("/upload", async (req, res) => {
     console.log(req.body);
-    const { 
-      scientificName,
-      commonName,
-      genus,
-      family,
-      plantType,
-      properties,
-      medicinal,
-      reference,
-      imgUrl,
-      latitude,
-      longitude,
-    } = req.body;
-  
     try {
       const newPlant = new Plant({
-        scientificName,
-        commonName,
-        genus,
-        family,
-        plantType,
-        properties,
-        medicinal,
-        reference,
-        imgUrl,
-        latitude: latitude || null,
-        longitude: longitude || null,
+        scientificName: req.body.scientificName?.trim() || "",
+        commonName: req.body.commonName?.trim() || "",
+        genus: req.body.genus?.trim() || "",
+        family: req.body.family?.trim() || "",
+        plantType: req.body.plantType?.trim() || "",
+        properties: req.body.properties?.trim() || "",
+        medicinal: req.body.medicinal?.trim() || "",
+        reference: req.body.reference?.trim() || "",
+        imgUrl: req.body.imgUrl?.trim() || "",
+        latitude: req.body.latitude || null,
+        longitude: req.body.longitude || null,
+        visitUrl: req.body.visitUrl || null,
       });
   
       await newPlant.save();
@@ -64,6 +51,7 @@ mongoose
       res.status(500).json({ error: "Error saving plant data" });
     }
   });
+  
 
 app.get("/search", async (req, res) => {
   try {
