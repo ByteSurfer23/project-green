@@ -236,17 +236,17 @@ const GreenCover = () => {
             {vitLocations.map((option) => (
               <li key={option}>
                 <button
-                  className="dropdown-item"
+                  className="dropdown-item small-text"
                   onClick={() => setSelectedOption(option)}
                 >
-                  {option}
+                  <p className="small-text">{option}</p>
                 </button>
               </li>
             ))}
           </ul>
         </div>
 
-        <button className="btn btn-success w-100" onClick={fetchLocationData}>
+        <button className="btn btn-success w-100 small-text" onClick={fetchLocationData}>
           Search
         </button>
 
