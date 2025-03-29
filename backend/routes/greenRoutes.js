@@ -9,12 +9,12 @@ router.post("/green-fetch", async (req, res) => {
     const { name, area, latitude, longitude, visitUrl, imageUrl } = req.body;
 
     const newGreen = new green({
-      name,
-      area,
-      latitude,
-      longitude,
-      visitUrl,
-      imgUrl: imageUrl,
+      name: name.trim(),
+      area: area.trim(),
+      latitude: latitude.trim(),
+      longitude: longitude.trim(),
+      visitUrl: visitUrl.trim(),
+      imgUrl: imageUrl.trim(),
     });
 
     await newGreen.save();
