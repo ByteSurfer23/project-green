@@ -7,7 +7,7 @@ const Header = () => (
     <Link to="/search" className="">
     <p>Explore Our Site</p>
         </Link>
-        <Link to="/search" className="">
+        <Link to="/admin" className="">
     <p>Admin Login</p>
         </Link>
   </header>
