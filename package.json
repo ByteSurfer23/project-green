@@ -57,7 +57,7 @@
   "rewrites": [],
   "headers": [
     {
-      "source": "/loaderio-*.txt",
+      "source": "/loaderio-e74ab81316bc6579e561d7a908aa9812.txt",
       "headers": [
         {
           "key": "Content-Type",
