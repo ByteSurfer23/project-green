@@ -108,8 +108,10 @@ app.put("/edit/:id" , async(req,res)=>{
 });
 
 
-
-
-
 const PORT = process.env.PORT;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
+app.get('/', (req, res) => {
+  res.send('Email worker and caching server are running.');
+  console.log("Server is being polled");
+});
