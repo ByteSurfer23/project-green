@@ -1,46 +1,22 @@
 ---
-# ansible/deploy.yml
-- hosts: web
-  become: true
-  vars:
-    image_name: "{{ dockerhub_user }}/green-vit:latest"
-    container_name: my-backend
-    host_port: 80
-    container_port: "{{ container_port | default('5000') }}"
+- name: Deploy Docker container to Azure VM
+  hosts: azure_vm
+  become: yes
+
   tasks:
-    - name: Update apt cache
-      apt:
-        update_cache: yes
-        cache_valid_time: 3600
+    - name: Pull latest Docker image
+      command: docker pull {{ lookup('env', 'DOCKER_USERNAME') }}/green-vit:latest
 
-    - name: Install docker if missing
-      apt:
-        name: docker.io
-        state: present
+    - name: Stop existing container (if running)
+      command: docker stop green-vit || true
 
-    - name: Ensure docker service is running
-      service:
-        name: docker
-        state: started
-        enabled: yes
-
-    - name: Login to Docker Hub on host
-      ansible.builtin.shell: |
-        echo "{{ dockerhub_token }}" | docker login -u "{{ dockerhub_user }}" --password-stdin
-      args:
-        warn: false
-
-    - name: Pull latest image
-      ansible.builtin.shell: docker pull {{ image_name }}
-
-    - name: Stop & remove old container if exists
-      ansible.builtin.shell: docker rm -f {{ container_name }} || true
+    - name: Remove old container (if exists)
+      command: docker rm green-vit || true
 
     - name: Run new container
-      ansible.builtin.shell: |
-        docker run -d --restart unless-stopped \
-          -p {{ host_port }}:{{ container_port }} \
-          --name {{ container_name }} \
-          -e MONGO_URL="{{ mongo_url }}" \
-          -e PORT="{{ container_port }}" \
-          {{ image_name }}
+      command: >
+        docker run -d --name green-vit
+        -p 80:{{ lookup('env', 'PORT') }}
+        -e MONGO_URL={{ lookup('env', 'MONGO_URL') }}
+        -e PORT={{ lookup('env', 'PORT') }}
+        {{ lookup('env', 'DOCKER_USERNAME') }}/green-vit:latest
