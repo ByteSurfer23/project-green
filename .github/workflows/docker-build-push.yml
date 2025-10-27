@@ -21,7 +21,8 @@ jobs:
 
       # 🏗️ Step 3: Build Docker image (use secrets as build args)
       - name: Build Docker image
-        run: docker build \
+        run: | 
+          docker build \
           --build-arg MONGO_URL=${{ secrets.MONGO_URL }} \
           --build-arg PORT=${{ secrets.PORT }} \
           -t ${{ secrets.DOCKER_USERNAME }}/green-vit:latest ./backend
