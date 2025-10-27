@@ -1,4 +1,4 @@
-name: Build and Push Docker Image
+name: Build, Push, and Deploy with Ansible
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
@@ -26,7 +26,6 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_TOKEN }}
 
-      # ✅ Cache Docker layers for faster builds
       - name: Cache Docker layers
         uses: actions/cache@v4
         with:
@@ -48,8 +47,32 @@ jobs:
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new
 
-      # ✅ Move new cache to persist for next run
       - name: Move new cache
         run: |
           rm -rf /tmp/.buildx-cache
           mv /tmp/.buildx-cache-new /tmp/.buildx-cache
+
+      # ✅ Set up Ansible
+      - name: Install Ansible
+        run: |
+          sudo apt update
+          sudo apt install -y ansible
+
+      # ✅ Configure SSH key for Ansible to use
+      - name: Set up SSH for Ansible
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ secrets.VM_IP }} >> ~/.ssh/known_hosts
+
+      # ✅ Create dynamic Ansible inventory
+      - name: Create Ansible inventory file
+        run: |
+          echo "[azure_vm]" > inventory.ini
+          echo "${{ secrets.VM_IP }} ansible_user=${{ secrets.VM_USER }} ansible_ssh_private_key_file=~/.ssh/id_rsa" >> inventory.ini
+
+      # ✅ Run Ansible Playbook to deploy
+      - name: Run Ansible Playbook
+        run: |
+          ansible-playbook -i inventory.ini ansible/deploy.yml
