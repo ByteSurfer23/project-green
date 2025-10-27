@@ -1,0 +1,4 @@
+[web]
+# This is a placeholder. We will create a dynamic inventory in the workflow.
+# If you want to commit a static host, uncomment and replace below:
+# 20.244.40.143 ansible_user=azureuser
