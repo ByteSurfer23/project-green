@@ -3,20 +3,37 @@
   hosts: azure_vm
   become: yes
 
+  vars:
+    docker_image: "{{ docker_username }}/green-vit:latest"
+    port: "{{ port }}"
+    mongo_url: "{{ mongo_url }}"
+
   tasks:
     - name: Pull latest Docker image
-      command: docker pull {{ lookup('env', 'DOCKER_USERNAME') }}/green-vit:latest
+      community.docker.docker_image:
+        name: "{{ docker_image }}"
+        source: pull
 
     - name: Stop existing container (if running)
-      command: docker stop green-vit || true
+      community.docker.docker_container:
+        name: green-vit
+        state: stopped
+      ignore_errors: yes
 
     - name: Remove old container (if exists)
-      command: docker rm green-vit || true
+      community.docker.docker_container:
+        name: green-vit
+        state: absent
+      ignore_errors: yes
 
     - name: Run new container
-      command: >
-        docker run -d --name green-vit
-        -p 80:{{ lookup('env', 'PORT') }}
-        -e MONGO_URL={{ lookup('env', 'MONGO_URL') }}
-        -e PORT={{ lookup('env', 'PORT') }}
-        {{ lookup('env', 'DOCKER_USERNAME') }}/green-vit:latest
+      community.docker.docker_container:
+        name: green-vit
+        image: "{{ docker_image }}"
+        state: started
+        restart_policy: always
+        ports:
+          - "80:{{ port }}"
+        env:
+          MONGO_URL: "{{ mongo_url }}"
+          PORT: "{{ port }}"
