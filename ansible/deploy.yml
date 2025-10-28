@@ -1,6 +1,6 @@
 ---
 - name: Deploy Docker container to Azure VM
-  hosts: web
+  hosts: azure_vm
   become: yes
 
   tasks:
