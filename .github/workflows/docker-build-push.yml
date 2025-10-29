@@ -69,7 +69,9 @@ jobs:
       - name: Create Ansible inventory file
         run: |
           echo "[azure_vm]" > inventory.ini
-          echo "${{ secrets.VM_IP }} ansible_user=${{ secrets.VM_USER }} ansible_ssh_private_key_file=~/.ssh/id_rsa ansible_ssh_common_args='-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o KexAlgorithms=curve25519-sha256,diffie-hellman-group-exchange-sha256'" >> inventory.ini
+          echo "${{ secrets.VM_IP }} ansible_user=${{ secrets.VM_USER }} ansible_ssh_private_key_file=/home/runner/.ssh/id_rsa ansible_ssh_common_args='-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o KexAlgorithms=curve25519-sha256,diffie-hellman-group-exchange-sha256'" >> inventory.ini
+
+
 
       # Run Ansible Playbook
       - name: Run Ansible Playbook
